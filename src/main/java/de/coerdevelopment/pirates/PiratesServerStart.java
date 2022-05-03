@@ -1,19 +1,18 @@
-package de.coerdevelopment.standalone.serverui;
+package de.coerdevelopment.pirates;
 
 import de.coerdevelopment.standalone.logging.ServerLogger;
 import de.coerdevelopment.standalone.net.server.GameServer;
 import de.coerdevelopment.standalone.net.server.LoginServer;
 import de.coerdevelopment.standalone.net.server.ServerType;
+import de.coerdevelopment.standalone.serverui.ServerStartUI;
 
 import javax.swing.*;
-import java.sql.SQLException;
 import java.util.HashMap;
 import java.util.Map;
 
-public class UITester {
+public class PiratesServerStart {
 
-    public static void main(String[] args) throws SQLException {
-
+    public static void main(String[] args) {
         ServerLogger.getInstance();   // important call
 
         Thread.setDefaultUncaughtExceptionHandler((t, e) -> {
@@ -31,8 +30,6 @@ public class UITester {
         } catch (Exception e) {
             ServerLogger.getInstance().getLogger().error(e);
         }
-
-
     }
 
 }

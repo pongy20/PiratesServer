@@ -12,9 +12,6 @@ public class GameServer extends Server {
         super(port, "Gameserver");
         maxOnlinePlayers = 1000;
 
-        if (false) {
-            initSQL();
-        }
     }
 
     public GameServer() {

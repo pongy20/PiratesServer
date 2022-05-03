@@ -20,7 +20,7 @@
               <enabled value="true"/>
               <font size="48"/>
               <horizontalAlignment value="0"/>
-              <text value="Wizz - Server"/>
+              <text value="Coer - Server"/>
             </properties>
           </component>
           <component id="fd62b" class="javax.swing.JLabel" binding="creatorLabel">

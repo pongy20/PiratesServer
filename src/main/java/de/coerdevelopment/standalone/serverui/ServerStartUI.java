@@ -1,8 +1,10 @@
 package de.coerdevelopment.standalone.serverui;
 
+import de.coerdevelopment.pirates.authserver.AuthServer;
 import de.coerdevelopment.standalone.net.server.GameServer;
 import de.coerdevelopment.standalone.net.server.LoginServer;
 import de.coerdevelopment.standalone.net.server.Server;
+import de.coerdevelopment.standalone.net.server.ServerType;
 
 import javax.swing.*;
 import java.awt.*;
@@ -20,12 +22,12 @@ public class ServerStartUI {
         return instance;
     }
 
-    public static ServerStartUI createInstance(Map<String, Integer> servers) {
+    public static ServerStartUI createInstance(Map<String, Object[]> servers) {
         instance = new ServerStartUI(servers);
         return instance;
     }
 
-    public JFrame createUI(Map<String, Integer> servers) {
+    public JFrame createUI(Map<String, Object[]> servers) {
         assert instance != null;
         JFrame frame = new JFrame("WizzServer - Start");
         frame.setContentPane(instance.contentPanel);
@@ -53,9 +55,9 @@ public class ServerStartUI {
     private JButton createWorldButton;
     private JButton changePortButton;
 
-    private Map<String, Integer> servers;
+    private Map<String, Object[]> servers;
 
-    private ServerStartUI(Map<String, Integer> servers) {
+    private ServerStartUI(Map<String, Object[]> servers) {
         this.servers = servers;
         changePortButton.addActionListener(new ActionListener() {
             @Override
@@ -80,7 +82,6 @@ public class ServerStartUI {
                 updatePortField();
             }
         });
-        updatePortField();
         startServerButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -89,6 +90,7 @@ public class ServerStartUI {
         });
 
         updateList();
+        updatePortField();
     }
 
     private void updateList() {
@@ -107,7 +109,7 @@ public class ServerStartUI {
         int port = 0;
         for (String servername : servers.keySet()) {
             if (selectedItem.equals(servername)) {
-                port = servers.get(servername);
+                port = (int) servers.get(servername)[1];
             }
         }
         portField.setText(port + "");
@@ -143,7 +145,16 @@ public class ServerStartUI {
         Server server = null;
 
         String selectedItem = serverTypeCombo.getSelectedItem().toString();
-         //TODO:
+        Object[] info = servers.get(selectedItem);
+        if (info == null) {
+            return;
+        }
+
+        if (((ServerType) info[0]).equals(ServerType.LOGINSERVER)) {
+            server = new AuthServer((int) info[1]);
+        } else {
+            server = new GameServer((int) info[1]);
+        }
 
         OverviewUI ui = OverviewUI.createInstance(server);
         JFrame frame = ui.createUI();

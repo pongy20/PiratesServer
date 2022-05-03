@@ -28,7 +28,7 @@
                 </constraints>
                 <properties>
                   <font size="28"/>
-                  <text value="Wizz - Server"/>
+                  <text value="Coer - Server"/>
                 </properties>
               </component>
               <component id="71ec7" class="javax.swing.JLabel" binding="servernameLabel">
@@ -136,14 +136,6 @@
             <properties>
               <name value=""/>
             </properties>
-            <border type="none"/>
-            <children/>
-          </grid>
-          <grid id="30ec3" binding="wizzPanel" custom-create="true" layout-manager="GridBagLayout">
-            <constraints>
-              <tabbedpane title="Wizz"/>
-            </constraints>
-            <properties/>
             <border type="none"/>
             <children/>
           </grid>

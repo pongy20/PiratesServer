@@ -11,7 +11,6 @@ public class LoginServer extends Server {
 
     public LoginServer(int port) {
         super(port, "Loginserver");
-        registerLoginMethods();
     }
 
     public LoginServer() {
@@ -19,16 +18,7 @@ public class LoginServer extends Server {
     }
 
     public void registerLoginMethods() {
-        tcpServer.registerMethod(getRegisterClientMethod());
-    }
 
-    public TcpMethod getRegisterClientMethod() {
-        return new TcpMethod("REGISTER_CLIENT") {
-            @Override
-            public void onMethod(Datapackage incomingPackage, TcpThread clientThread) {
-                DebugMessage.sendInfoMessage(incomingPackage.getData().toString());
-            }
-        };
     }
 
     @Override

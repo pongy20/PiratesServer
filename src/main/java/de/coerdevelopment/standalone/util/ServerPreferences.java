@@ -13,7 +13,7 @@ public class ServerPreferences {
         return instance;
     }
 
-    private final String preferencesNode = "Wizz_Server";
+    private final String preferencesNode = "Coer_Server";
     private final Preferences preferences;
 
     // console message preferences
