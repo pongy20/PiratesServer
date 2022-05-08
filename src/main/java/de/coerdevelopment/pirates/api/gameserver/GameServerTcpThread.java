@@ -1,28 +1,23 @@
-package de.coerdevelopment.standalone.net.tcp;
+package de.coerdevelopment.pirates.api.gameserver;
 
+import de.coerdevelopment.pirates.utils.PiratesMethod;
 import de.coerdevelopment.standalone.json.JsonConverter;
 import de.coerdevelopment.standalone.net.Datapackage;
+import de.coerdevelopment.standalone.net.tcp.TcpClientThread;
+import de.coerdevelopment.standalone.net.tcp.TcpMethod;
+import de.coerdevelopment.standalone.net.tcp.TcpServer;
+import de.coerdevelopment.standalone.net.tcp.TcpThread;
 import de.coerdevelopment.standalone.util.DebugMessage;
 
-import java.io.*;
 import java.net.Socket;
 import java.net.SocketException;
-import java.util.List;
 
-public abstract class TcpThread extends Thread {
+public class GameServerTcpThread extends TcpClientThread {
 
-    public int accountId;
+    public boolean isAuthorized;
 
-    public Socket socket;
-
-    protected InputStream in;
-    protected OutputStream out;
-
-    protected List<TcpMethod> registeredMethods;
-
-    public TcpThread(Socket socket, List<TcpMethod> registeredMethods) {
-        this.socket = socket;
-        this.registeredMethods = registeredMethods;
+    public GameServerTcpThread(TcpServer server, Socket client) {
+        super(server, client);
     }
 
     @Override
@@ -54,9 +49,15 @@ public abstract class TcpThread extends Thread {
                 }
                 if (convertedObj instanceof Datapackage) {
                     Datapackage datapackage = (Datapackage) convertedObj;
+                    if (!datapackage.getMethodID().equals(PiratesMethod.LOGIN_PLAYER.getMethodId())) {
+                        if (!isAuthorized) {        // client is not authorized
+                            send(new Datapackage(PiratesMethod.NOT_AUTHORIZED.getMethodId()));
+                            return;
+                        }
+                    }
                     for (TcpMethod method : registeredMethods) {
                         if (method.getMethodID().equals(datapackage.getMethodID())) {
-                            method.onMethod(datapackage, TcpThread.this);
+                            method.onMethod(datapackage, GameServerTcpThread.this);
                             break;
                         }
                     }
@@ -74,18 +75,5 @@ public abstract class TcpThread extends Thread {
             DebugMessage.sendErrorMessage(e.getMessage());
         }
     }
-
-    public void send(Datapackage datapackage) {
-        try {
-            String json = JsonConverter.getInstance().convertDatapackageToJson(datapackage);
-            DebugMessage.sendDebugMessage(json);
-            out.write(json.getBytes());
-            out.flush();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
-
-    public abstract void closeConnection();
 
 }

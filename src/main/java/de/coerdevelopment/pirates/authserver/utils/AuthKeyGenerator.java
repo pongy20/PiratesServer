@@ -24,6 +24,11 @@ public class AuthKeyGenerator {
         return MD5.getInstance().md5(accountId + encryptedTime);
     }
 
+    public boolean isAuthKeyCorrect(int accountId, long time, String authKey) {
+        String generatedAuthKey = generateAuthKey(accountId, time);
+        return generatedAuthKey.equals(authKey);
+    }
+
     public String encryptTime(long time) {
         String timeS = time + "";
         String output = "";

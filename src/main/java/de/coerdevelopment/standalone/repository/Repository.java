@@ -8,7 +8,7 @@ public class Repository {
     public static List<Repository> reposities = new ArrayList<>();
 
     protected SQL sql;
-    protected String tableName;
+    public String tableName;
 
     public Repository(String tableName) {
         this.tableName = tableName;

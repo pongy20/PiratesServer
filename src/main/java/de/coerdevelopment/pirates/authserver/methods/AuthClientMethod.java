@@ -2,7 +2,7 @@ package de.coerdevelopment.pirates.authserver.methods;
 
 import com.google.gson.Gson;
 import de.coerdevelopment.pirates.api.Account;
-import de.coerdevelopment.pirates.authserver.repository.AccountRepository;
+import de.coerdevelopment.pirates.api.repository.AccountRepository;
 import de.coerdevelopment.pirates.authserver.utils.AuthKeyGenerator;
 import de.coerdevelopment.pirates.utils.PiratesMethod;
 import de.coerdevelopment.standalone.net.Datapackage;
@@ -44,9 +44,12 @@ public class AuthClientMethod extends TcpMethod {
             return;
         }
         Account account = accountRepository.getAccountByMail(passedMail);
+        clientThread.accountId = account.accountID;
         long time = System.currentTimeMillis();
         String authKey = AuthKeyGenerator.getInstance().generateAuthKey(account.accountID, time);
-        String json = gson.toJson(new Object[]{account.accountID, authKey});
+        String json = gson.toJson(new Object[]{account.accountID, authKey, time});
         clientThread.send(new Datapackage("AUTH_SUCCESS", json));
+        SendAvailableWorldsMethod worldsMethod = new SendAvailableWorldsMethod();
+        worldsMethod.onMethod(null, clientThread);
     }
 }

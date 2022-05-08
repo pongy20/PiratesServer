@@ -1,0 +1,55 @@
+package de.coerdevelopment.pirates.api.building.instances;
+
+import de.coerdevelopment.pirates.api.ResourceType;
+import de.coerdevelopment.pirates.api.building.BuildingType;
+import de.coerdevelopment.pirates.api.building.ProductionBuilding;
+import de.coerdevelopment.pirates.api.building.ResourceCost;
+
+public class Lumberjack extends ProductionBuilding {
+
+    public Lumberjack(int level) {
+        super(BuildingType.LUMBERJACK, level, ResourceType.WOOD);
+    }
+
+    @Override
+    public ResourceCost getUpgradeCosts(int level) {
+        ResourceCost costs;
+        switch (level) {
+            case 1 -> costs = new ResourceCost(0,0,0,0);
+            case 2 -> costs = new ResourceCost(50,34,0,0);
+            case 3 -> costs = new ResourceCost(210,140,0,0);
+            case 4 -> costs = new ResourceCost(560,300,40,0);
+            case 5 -> costs = new ResourceCost(1000,700,100,0);
+            case 6 -> costs = new ResourceCost(2400,1400,200,0);
+            case 7 -> costs = new ResourceCost(5000,3000,400,0);
+            case 8 -> costs = new ResourceCost(10000,7000,900,0);
+            case 9 -> costs = new ResourceCost(17000,12000,1900,0);
+            case 10 -> costs = new ResourceCost(30000,23000,3400,0);
+            case 11 -> costs = new ResourceCost(40000,30000,6000,0);
+            case 12 -> costs = new ResourceCost(50000,33000,10000,0);
+            default -> throw new IllegalStateException("Unexpected value: " + level);
+        }
+        return costs;
+    }
+
+    @Override
+    public int getProductionRate(int level) {
+        int rate;
+        switch (level) {
+            case 1 -> rate = 30;
+            case 2 -> rate = 50;
+            case 3 -> rate = 75;
+            case 4 -> rate = 110;
+            case 5 -> rate = 180;
+            case 6 -> rate = 250;
+            case 7 -> rate = 350;
+            case 8 -> rate = 450;
+            case 9 -> rate = 600;
+            case 10 -> rate = 750;
+            case 11 -> rate = 950;
+            case 12 -> rate = 1200;
+            default -> throw new IllegalStateException("Unexpected value: " + level);
+        }
+        return rate;
+    }
+}

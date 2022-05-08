@@ -19,7 +19,6 @@ public class MemoryUsageJob extends Job {
 
     @Override
     public boolean execute(Jobrun jobrun) {
-        System.out.println("Memory Job gestartet");
         try {
             runtime.gc();   // clears unused memory space
             int usedMemory = (int) OverviewUI.bytesToMegabytes(runtime.totalMemory() - runtime.freeMemory());

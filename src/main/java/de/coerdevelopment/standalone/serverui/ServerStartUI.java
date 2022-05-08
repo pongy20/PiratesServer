@@ -1,5 +1,6 @@
 package de.coerdevelopment.standalone.serverui;
 
+import de.coerdevelopment.pirates.api.gameserver.PiratesGameServer;
 import de.coerdevelopment.pirates.authserver.AuthServer;
 import de.coerdevelopment.standalone.net.server.GameServer;
 import de.coerdevelopment.standalone.net.server.LoginServer;
@@ -153,7 +154,7 @@ public class ServerStartUI {
         if (((ServerType) info[0]).equals(ServerType.LOGINSERVER)) {
             server = new AuthServer((int) info[1]);
         } else {
-            server = new GameServer((int) info[1]);
+            server = new PiratesGameServer((int) info[1]);
         }
 
         OverviewUI ui = OverviewUI.createInstance(server);
