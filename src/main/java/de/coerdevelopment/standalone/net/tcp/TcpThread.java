@@ -18,17 +18,25 @@ public abstract class TcpThread extends Thread {
     protected InputStream in;
     protected OutputStream out;
 
+    public int timeout;
+
     protected List<TcpMethod> registeredMethods;
 
     public TcpThread(Socket socket, List<TcpMethod> registeredMethods) {
+        this(socket, registeredMethods, 3000);
+    }
+    public TcpThread(Socket socket, List<TcpMethod> registeredMethods, int timeout) {
         this.socket = socket;
         this.registeredMethods = registeredMethods;
+        this.timeout = timeout;
     }
 
     @Override
     public void run() {
         super.run();
         try {
+            socket.setSoTimeout(timeout);
+            socket.setKeepAlive(false);
             out = socket.getOutputStream();
             out.flush();
             in = socket.getInputStream();
@@ -39,18 +47,18 @@ public abstract class TcpThread extends Thread {
                 if (length < 0) {
                     continue;
                 }
+                out.write(new byte[1]);
                 String readString = new String(data, 0, length);
                 if (readString == null) {
                     DebugMessage.sendErrorMessage("Datapackage with NULL data arrived.");
-                    break;
+                    continue;
                 }
                 Object convertedObj = null;
                 try {
                     convertedObj = JsonConverter.getInstance().convertJsonToObject(readString);  // Exception catch in this case makes sense
                 } catch (Exception e) {
                     DebugMessage.sendErrorMessage("Cant convert datapackage using JSON.");
-                    e.printStackTrace();
-                    break;
+                    continue;
                 }
                 if (convertedObj instanceof Datapackage) {
                     Datapackage datapackage = (Datapackage) convertedObj;
@@ -65,13 +73,10 @@ public abstract class TcpThread extends Thread {
                     break;
                 }
             }
-        } catch (SocketException se) {
-            if (se.getMessage().equals("Connection reset")) {
-                closeConnection();
-            }
         } catch (Exception e) {
-            e.printStackTrace();
             DebugMessage.sendErrorMessage(e.getMessage());
+        } finally {
+            closeConnection();
         }
     }
 

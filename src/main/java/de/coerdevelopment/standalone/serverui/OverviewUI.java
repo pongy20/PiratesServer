@@ -34,7 +34,7 @@ public class OverviewUI {
         if (frame != null) {
             return frame;
         }
-        JFrame frame = new JFrame("WizzServer - Overview");
+        JFrame frame = new JFrame("CoerServer - Overview");
         frame.setContentPane(instance.contentPanel);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.setMinimumSize(new Dimension(800, 550));      // depends on user screen size, shouldn't ne hardcoded
