@@ -15,12 +15,20 @@ public class Island {
     public Player owner;
     public Coordinates coordinates;
     public String islandName;
+    public int wood;
+    public int ore;
+    public int fabric;
+    public int ducat;
     public List<Building> buildings;
 
-    public Island(int islandId, Player owner, String islandName, List<Building> buildings) {
+    public Island(int islandId, Player owner, String islandName, int wood, int ore, int fabric, int ducat, List<Building> buildings) {
         this.islandId = islandId;
         this.owner = owner;
         this.islandName = islandName;
+        this.wood = wood;
+        this.ore = ore;
+        this.fabric = fabric;
+        this.ducat = ducat;
         this.buildings = buildings;
         this.coordinates = new Coordinates(0,0);
     }

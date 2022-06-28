@@ -1,9 +1,7 @@
 package de.coerdevelopment.standalone.serverui;
 
-import de.coerdevelopment.pirates.api.gameserver.PiratesGameServer;
+import de.coerdevelopment.pirates.gameserver.PiratesGameServer;
 import de.coerdevelopment.pirates.authserver.AuthServer;
-import de.coerdevelopment.standalone.net.server.GameServer;
-import de.coerdevelopment.standalone.net.server.LoginServer;
 import de.coerdevelopment.standalone.net.server.Server;
 import de.coerdevelopment.standalone.net.server.ServerType;
 
@@ -11,7 +9,6 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.util.List;
 import java.util.Map;
 
 public class ServerStartUI {

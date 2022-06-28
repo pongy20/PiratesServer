@@ -12,30 +12,25 @@ import java.util.List;
 public abstract class TcpThread extends Thread {
 
     public int accountId;
+    public boolean isAuthorized;
 
     public Socket socket;
 
     protected InputStream in;
     protected OutputStream out;
 
-    public int timeout;
-
     protected List<TcpMethod> registeredMethods;
 
     public TcpThread(Socket socket, List<TcpMethod> registeredMethods) {
-        this(socket, registeredMethods, 3000);
-    }
-    public TcpThread(Socket socket, List<TcpMethod> registeredMethods, int timeout) {
         this.socket = socket;
         this.registeredMethods = registeredMethods;
-        this.timeout = timeout;
     }
 
     @Override
     public void run() {
         super.run();
         try {
-            socket.setSoTimeout(timeout);
+
             socket.setKeepAlive(false);
             out = socket.getOutputStream();
             out.flush();
@@ -44,10 +39,12 @@ public abstract class TcpThread extends Thread {
             while(!isInterrupted()) {
                 byte[] data = new byte[4096];
                 int length = in.read(data);
-                if (length < 0) {
+                if (length == 0) {
                     continue;
+                } else if (length < 0) {
+                    break;
                 }
-                out.write(new byte[1]);
+
                 String readString = new String(data, 0, length);
                 if (readString == null) {
                     DebugMessage.sendErrorMessage("Datapackage with NULL data arrived.");
@@ -84,8 +81,10 @@ public abstract class TcpThread extends Thread {
         try {
             String json = JsonConverter.getInstance().convertDatapackageToJson(datapackage);
             DebugMessage.sendDebugMessage(json);
-            out.write(json.getBytes());
-            out.flush();
+            byte[] dataToSend = json.getBytes();
+            DebugMessage.sendDebugMessage(dataToSend.length);
+            out.write(dataToSend);
+//          out.flush(); --> Wird in OutputStream nur leer implementiert, daher nicht notwendig
         } catch (IOException e) {
             e.printStackTrace();
         }

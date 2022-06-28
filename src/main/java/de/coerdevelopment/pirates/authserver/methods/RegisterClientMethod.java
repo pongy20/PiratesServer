@@ -25,7 +25,6 @@ public class RegisterClientMethod extends TcpMethod {
 
     @Override
     public void onMethod(Datapackage incomingPackage, TcpThread clientThread) {
-        DebugMessage.sendInfoMessage("Methode wurde geklickt!");
         String incomingRawData = incomingPackage.getData();
         if (incomingRawData == null) {
             clientThread.send(new Datapackage(ErrorMessage.DATAPACKAGE_DATA_NULL));
@@ -49,7 +48,9 @@ public class RegisterClientMethod extends TcpMethod {
         long time = System.currentTimeMillis();
         String authKey = AuthKeyGenerator.getInstance().generateAuthKey(account.accountID, time);
         String json = gson.toJson(new Object[]{account.accountID, authKey, time});
+        //info client - registration was successful
         clientThread.send(new Datapackage("REGISTER_SUCCESS", json));
+        // send available worlds to client
         SendAvailableWorldsMethod worldsMethod = new SendAvailableWorldsMethod();
         worldsMethod.onMethod(null, clientThread);
     }
