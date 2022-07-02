@@ -1,6 +1,7 @@
 package de.coerdevelopment.pirates.authserver.utils;
 
 import de.coerdevelopment.standalone.util.MD5;
+import de.coerdevelopment.standalone.util.SHA256;
 
 public class AuthKeyGenerator {
     
@@ -21,7 +22,7 @@ public class AuthKeyGenerator {
 
     public String generateAuthKey(int accountId, long time) {
         String encryptedTime = encryptTime(time);
-        return MD5.getInstance().md5(accountId + encryptedTime);
+        return SHA256.getInstance().stringToHash(accountId + encryptedTime);
     }
 
     public boolean isAuthKeyCorrect(int accountId, long time, String authKey) {

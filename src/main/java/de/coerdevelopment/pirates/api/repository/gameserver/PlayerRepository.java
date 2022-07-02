@@ -1,7 +1,9 @@
-package de.coerdevelopment.pirates.api.repository;
+package de.coerdevelopment.pirates.api.repository.gameserver;
 
 import de.coerdevelopment.pirates.api.GameWorld;
 import de.coerdevelopment.pirates.api.Player;
+import de.coerdevelopment.pirates.api.repository.auth.AccountRepository;
+import de.coerdevelopment.pirates.api.repository.auth.GameWorldRepository;
 import de.coerdevelopment.standalone.repository.Repository;
 
 import java.sql.PreparedStatement;

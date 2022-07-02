@@ -20,8 +20,12 @@ public class Island {
     public int fabric;
     public int ducat;
     public List<Building> buildings;
+    public Lumberjack lumberjack;
+    public Mine mine;
+    public Farm farm;
+    public Storage storage;
 
-    public Island(int islandId, Player owner, String islandName, int wood, int ore, int fabric, int ducat, List<Building> buildings) {
+    public Island(int islandId, Player owner, String islandName, int wood, int ore, int fabric, int ducat, Lumberjack lumberjack, Mine mine, Farm farm, Storage storage) {
         this.islandId = islandId;
         this.owner = owner;
         this.islandName = islandName;
@@ -29,7 +33,10 @@ public class Island {
         this.ore = ore;
         this.fabric = fabric;
         this.ducat = ducat;
-        this.buildings = buildings;
+        this.lumberjack = lumberjack;
+        this.mine = mine;
+        this.farm = farm;
+        this.storage = storage;
         this.coordinates = new Coordinates(0,0);
     }
 

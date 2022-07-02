@@ -1,6 +1,7 @@
-package de.coerdevelopment.pirates.api.repository;
+package de.coerdevelopment.pirates.api.repository.auth;
 
 import de.coerdevelopment.pirates.api.GameWorld;
+import de.coerdevelopment.pirates.api.repository.gameserver.PlayerRepository;
 import de.coerdevelopment.standalone.repository.Repository;
 
 import java.sql.PreparedStatement;
@@ -114,18 +115,15 @@ public class GameWorldRepository extends Repository {
         }
         return enabledWorlds;
     }
-    public Map<String, String> getAllWorldsByAccount(int accountId) {
-        Map<String, String> worlds = new HashMap<>();
+    public List<GameWorld> getAllWorldsByAccount(int accountId) {
+        List<GameWorld> worlds = new ArrayList<>();
         try {
-            String playerTable = PlayerRepository.getInstance().tableName;
-            PreparedStatement ps = sql.getConnection().prepareStatement("SELECT A.name, B.username FROM " + tableName + " AS A" +
-                    " INNER JOIN " + playerTable + " AS B ON B.worldId = A.worldId WHERE B.accountId = ?");
+            PreparedStatement ps = sql.getConnection().prepareStatement("SELECT * FROM " + tableName
+                    + " WHERE worldId IN (SELECT worldId FROM " + AccountPlayerRepository.getInstance().tableName + " WHERE accountId = ?)");
             ps.setInt(1, accountId);
             ResultSet rs = ps.executeQuery();
-            while (rs.next()) {
-                String worldName = rs.getString("name");
-                String username = rs.getString("username");
-                worlds.put(worldName, username);
+            while(rs.next()) {
+                worlds.add(getGameWorldByResultSetEntry(rs));
             }
         } catch (SQLException e) {
             e.printStackTrace();

@@ -1,10 +1,11 @@
 package de.coerdevelopment.pirates.authserver;
 
+import de.coerdevelopment.pirates.api.repository.auth.AccountPlayerRepository;
 import de.coerdevelopment.pirates.authserver.methods.AuthClientMethod;
 import de.coerdevelopment.pirates.authserver.methods.RegisterClientMethod;
-import de.coerdevelopment.pirates.api.repository.AccountRepository;
-import de.coerdevelopment.pirates.api.repository.GameWorldRepository;
-import de.coerdevelopment.pirates.api.repository.PlayerRepository;
+import de.coerdevelopment.pirates.api.repository.auth.AccountRepository;
+import de.coerdevelopment.pirates.api.repository.auth.GameWorldRepository;
+import de.coerdevelopment.pirates.api.repository.gameserver.PlayerRepository;
 import de.coerdevelopment.standalone.net.server.LoginServer;
 import de.coerdevelopment.standalone.repository.SQL;
 import de.coerdevelopment.standalone.util.DebugMessage;
@@ -13,7 +14,7 @@ public class AuthServer extends LoginServer {
 
     AccountRepository accountRepository;
     GameWorldRepository worldRepository;
-    PlayerRepository playerRepository;
+    AccountPlayerRepository playerRepository;
 
     public AuthServer(int port) {
         super(port);
@@ -21,7 +22,7 @@ public class AuthServer extends LoginServer {
 
         accountRepository = AccountRepository.getInstance();
         worldRepository = GameWorldRepository.getInstance();
-        playerRepository = PlayerRepository.getInstance();
+        playerRepository = AccountPlayerRepository.getInstance();
 
         createTables();
 

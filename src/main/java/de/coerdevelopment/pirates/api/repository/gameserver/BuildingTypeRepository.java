@@ -1,4 +1,4 @@
-package de.coerdevelopment.pirates.api.repository;
+package de.coerdevelopment.pirates.api.repository.gameserver;
 
 import de.coerdevelopment.standalone.repository.Repository;
 

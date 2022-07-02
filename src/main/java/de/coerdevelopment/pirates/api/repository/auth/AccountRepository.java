@@ -1,4 +1,4 @@
-package de.coerdevelopment.pirates.api.repository;
+package de.coerdevelopment.pirates.api.repository.auth;
 
 import de.coerdevelopment.pirates.api.Account;
 import de.coerdevelopment.standalone.repository.Repository;
@@ -34,7 +34,7 @@ public class AccountRepository extends Repository {
             PreparedStatement ps = sql.getConnection().prepareStatement("CREATE TABLE IF NOT EXISTS " + tableName
                     + " (accountId INTEGER NOT NULL AUTO_INCREMENT," +
                     "mail VARCHAR(100) NOT NULL," +
-                    "password VARCHAR(32) NOT NULL," +
+                    "password VARCHAR(64) NOT NULL," +
                     "CONSTRAINT pk_accountId PRIMARY KEY(accountid)," +
                     "CONSTRAINT uk_mail UNIQUE(mail))");
             ps.execute();

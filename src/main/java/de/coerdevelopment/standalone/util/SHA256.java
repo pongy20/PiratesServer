@@ -1,32 +1,28 @@
 package de.coerdevelopment.standalone.util;
 
+import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 
-public class MD5 {
+public class SHA256 {
 
-    private static MD5 instance;
+    private static SHA256 instance;
 
-    public static MD5 getInstance() {
+    public static SHA256 getInstance() {
         if (instance == null) {
-            instance = new MD5();
+            instance = new SHA256();
         }
         return instance;
     }
 
-    private MD5() {
-
+    private SHA256() {
+        // singleton
     }
 
-    /**
-     * Hashes a string using md5
-     * @Deprecated Use SHA256 instead
-     */
-    @Deprecated
-    public String md5(String password) {
+    public String stringToHash(String input) {
         try {
-            MessageDigest md = MessageDigest.getInstance("MD5");
-            byte[] array = md.digest(password.getBytes());
+            MessageDigest md = MessageDigest.getInstance("SHA-256");
+            byte[] array = md.digest(input.getBytes(StandardCharsets.UTF_8));
             StringBuffer sb = new StringBuffer();
             for (int i = 0; i < array.length; ++i) {
                 sb.append(Integer.toHexString((array[i] & 0xFF) | 0x100).substring(1, 3));
@@ -37,4 +33,6 @@ public class MD5 {
         }
         return null;
     }
+
+
 }

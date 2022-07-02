@@ -4,12 +4,14 @@ import com.google.gson.Gson;
 import de.coerdevelopment.pirates.utils.PiratesMethod;
 import de.coerdevelopment.standalone.net.Datapackage;
 import de.coerdevelopment.standalone.net.tcp.TcpClient;
+import de.coerdevelopment.standalone.util.SHA256;
 
 import java.net.Socket;
 
 public class ClientTester {
 
     public static void main(String[] args)  {
+
         Thread thread = new Thread(new Runnable() {
             @Override
             public void run() {
