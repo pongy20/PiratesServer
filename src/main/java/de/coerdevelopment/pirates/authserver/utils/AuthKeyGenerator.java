@@ -15,6 +15,7 @@ public class AuthKeyGenerator {
     }
 
     private final char[] cryptMatrix = new char[]{'F','5','c','9','y','!','W','z','8','?'};
+    private final long AUTH_KEY_TIME = 1000 * 60 * 30;
     
     private AuthKeyGenerator() {
         //Private Constructor used in singleton context
@@ -26,6 +27,9 @@ public class AuthKeyGenerator {
     }
 
     public boolean isAuthKeyCorrect(int accountId, long time, String authKey) {
+        if (time + AUTH_KEY_TIME < System.currentTimeMillis()) {    // auth-key is old
+            return false;
+        }
         String generatedAuthKey = generateAuthKey(accountId, time);
         return generatedAuthKey.equals(authKey);
     }

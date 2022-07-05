@@ -73,6 +73,15 @@ public abstract class Job implements JobExecutable {
         return currentOldest;
     }
 
+    private static boolean isJobRegistered(Job job) {
+        for (Job temp : registeredJobs) {
+            if (temp.jobname.equals(job.jobname)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
     /**
      * Maximal duration the job should wait till it will be canceled
      */
@@ -101,7 +110,7 @@ public abstract class Job implements JobExecutable {
         this.interval = interval;
         this.jobRuns = new ArrayList<>();
 
-        registeredJobs.add(this);
+        if (!isJobRegistered(this)) registeredJobs.add(this);
     }
 
     /**

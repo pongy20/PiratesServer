@@ -28,8 +28,8 @@ public class AccountPlayerRepository extends Repository {
                     + "(accountId INTEGER NOT NULL," +
                     "worldId INTEGER NOT NULL," +
                     "CONSTRAINT pk_acc_pl PRIMARY KEY(accountId,worldId)," +
-                    "CONSTRAINT fk_accId FOREIGN KEY(accountId) REFERENCES " + AccountRepository.getInstance().tableName + "(accountId)," +
-                    "CONSTRAINT fk_worldId FOREIGN KEY(worldId) REFERENCES " + GameWorldRepository.getInstance().tableName + "(worldId))");
+                    "CONSTRAINT fk_accId FOREIGN KEY(accountId) REFERENCES " + AccountRepository.getInstance().tableName + "(accountId) ON DELETE CASCADE," +
+                    "CONSTRAINT fk_worldId FOREIGN KEY(worldId) REFERENCES " + GameWorldRepository.getInstance().tableName + "(worldId) ON DELETE CASCADE)");
             ps.executeUpdate();
         } catch (SQLException e) {
             e.printStackTrace();

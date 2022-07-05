@@ -10,6 +10,14 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
+/**
+ * Table syntax:
+ *
+ * playerId Integer PK
+ * accountId Integer UQ
+ * username VARCHAR(32) UQ
+ * diamonds Integer
+ */
 public class PlayerRepository extends Repository {
 
     private static PlayerRepository instance;
@@ -28,30 +36,29 @@ public class PlayerRepository extends Repository {
     public void createTable() {
         try {
             PreparedStatement ps = sql.getConnection().prepareStatement("CREATE TABLE IF NOT EXISTS " + tableName +
-                    " ( playerId INTEGER auto_increment," +
-                    "accountId Integer NOT NULL," +
-                    "worldId Integer NOT NULL," +
+                    " ( playerId INTEGER AUTO_INCREMENT," +
+                    "accountId INTEGER NOT NULL," +
                     "username VARCHAR(32) NOT NULL," +
                     "diamonds INTEGER NOT NULL," +
                     "CONSTRAINT pk_player PRIMARY KEY(playerId)," +
-                    "CONSTRAINT uk_acc_wl UNIQUE(accountId,worldId)," +
-                    "CONSTRAINT fk_acc FOREIGN KEY(accountId) REFERENCES " + AccountRepository.getInstance().tableName + "(accountId) ON DELETE CASCADE," +
-                    "CONSTRAINT fk_world FOREIGN KEY(worldId) REFERENCES " + GameWorldRepository.getInstance().tableName + "(worldId) ON DELETE CASCADE," +
-                    "CONSTRAINT uk_username UNIQUE(username,worldId))");
-            ps.executeUpdate();
+                    "CONSTRAINT uk_acc UNIQUE(accountId)," +
+                    "CONSTRAINT uk_username UNIQUE(username))");
+            ps.execute();
+
+            PreparedStatement ps2 = sql.getConnection().prepareStatement("ALTER TABLE " + tableName + " AUTO_INCREMENT = 2000000");
+            ps2.execute();
         } catch (SQLException e) {
             e.printStackTrace();
         }
     }
 
-    public void createPlayer(int accountId, int worldId, String username) {
+    public void insertPlayer(int accountId, String username) {
         try {
             PreparedStatement ps = sql.getConnection().prepareStatement("INSERT INTO " + tableName +
-                    " (accountId,worldId,username,diamonds) VALUES (?,?,?,?)");
+                    " (accountId,username,diamonds) VALUES (?,?,?)");
             ps.setInt(1, accountId);
-            ps.setInt(2, worldId);
-            ps.setString(3, username);
-            ps.setInt(4, 100);
+            ps.setString(2, username);
+            ps.setInt(3, 100);
             ps.executeUpdate();
         } catch (SQLException e) {
             e.printStackTrace();
@@ -71,12 +78,11 @@ public class PlayerRepository extends Repository {
         }
     }
 
-    public Player getPlayer(int accountId, int worldId) {
+    public Player getPlayerByAccountId(int accountId) {
         try {
             PreparedStatement ps = sql.getConnection().prepareStatement("SELECT * FROM " + tableName +
-                    " WHERE accountId = ? AND worldId = ?");
+                    " WHERE accountId = ?");
             ps.setInt(1, accountId);
-            ps.setInt(2, worldId);
             ResultSet rs = ps.executeQuery();
             if (rs.next()) {
                 return getPlayerByResultSetEntry(rs);
@@ -86,12 +92,25 @@ public class PlayerRepository extends Repository {
         }
         return null;
     }
-    public Player getPlayer(int worldId, String username) {
+    public Player getPlayerByUsername(String username) {
         try {
             PreparedStatement ps = sql.getConnection().prepareStatement("SELECT * FROM " + tableName +
-                    " WHERE worldId = ? AND username = ?");
-            ps.setInt(1, worldId);
-            ps.setString(2, username);
+                    " WHERE username = ?");
+            ps.setString(1, username);
+            ResultSet rs = ps.executeQuery();
+            if (rs.next()) {
+                return getPlayerByResultSetEntry(rs);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+    public Player getPlayerByPlayerId(int playerId) {
+        try {
+            PreparedStatement ps = sql.getConnection().prepareStatement("SELECT * FROM " + tableName +
+                    " WHERE playerId = ?");
+            ps.setInt(1, playerId);
             ResultSet rs = ps.executeQuery();
             if (rs.next()) {
                 return getPlayerByResultSetEntry(rs);
@@ -104,11 +123,9 @@ public class PlayerRepository extends Repository {
     private Player getPlayerByResultSetEntry(ResultSet rs) throws SQLException {
         int accountId = rs.getInt("accountId");
         int playerId = rs.getInt("playerId");
-        int worldId = rs.getInt("worldId");
         String username = rs.getString("username");
         int diamonds = rs.getInt("diamonds");
-        GameWorld world = GameWorldRepository.getInstance().getWorld(rs.getInt("worldId"));
-        return new Player(playerId,accountId,world,username,diamonds);
+        return new Player(playerId,accountId,username,diamonds);
     }
 
 }

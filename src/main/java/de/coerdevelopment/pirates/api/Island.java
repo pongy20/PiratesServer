@@ -25,13 +25,10 @@ public class Island {
     public Farm farm;
     public Storage storage;
 
-    public Island(int islandId, Player owner, String islandName, int wood, int ore, int fabric, int ducat, Lumberjack lumberjack, Mine mine, Farm farm, Storage storage) {
+    public Island(int islandId, Player owner, String islandName, int ducat, Lumberjack lumberjack, Mine mine, Farm farm, Storage storage) {
         this.islandId = islandId;
         this.owner = owner;
         this.islandName = islandName;
-        this.wood = wood;
-        this.ore = ore;
-        this.fabric = fabric;
         this.ducat = ducat;
         this.lumberjack = lumberjack;
         this.mine = mine;

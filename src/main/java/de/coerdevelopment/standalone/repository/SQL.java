@@ -22,6 +22,16 @@ public class SQL {
     }
 
     public static SQL newSQL(String host, String username, String password, String database, String port) {
+        if (instance != null) {
+            try {
+                instance.disconnect();
+                while(instance.isConnected()) {
+
+                }
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+        }
         instance = new SQL(host, username, password, database, port);
         return instance;
     }
@@ -69,7 +79,6 @@ public class SQL {
     public void disconnect() throws SQLException {
         if (isConnected()) {
             connection.close();
-            connection = null;
         }
     }
 
@@ -87,9 +96,13 @@ public class SQL {
         return false;
     }
 
-    public boolean isConnected() throws SQLException {
+    public boolean isConnected() {
         if (connection != null) {
-            return !connection.isClosed();
+            try {
+                return !connection.isClosed();
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
         }
         return false;
     }

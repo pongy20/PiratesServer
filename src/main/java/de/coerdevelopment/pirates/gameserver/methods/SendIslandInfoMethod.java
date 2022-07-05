@@ -20,8 +20,8 @@ public class SendIslandInfoMethod extends TcpMethod {
 
     @Override
     public void onMethod(Datapackage incomingPackage, TcpThread clientThread) {
-        Player player = new Player(100000, 10000, new GameWorld("Anson", 42210, "localhost"), "pongy20", Integer.MAX_VALUE);
-        Island island = new Island(10000, player, "Coole Insel", 1000, 1000, 2000, Integer.MAX_VALUE, new Lumberjack(1), new Mine(1), new Farm(1), new Storage(1));
+        Player player = new Player(100000, 10000, "pongy20", Integer.MAX_VALUE);
+        Island island = new Island(10000, player, "Coole Insel", Integer.MAX_VALUE, new Lumberjack(1), new Mine(1), new Farm(1), new Storage(1));
         Datapackage datapackage = new Datapackage(methodID, island);
         clientThread.send(datapackage);
     }

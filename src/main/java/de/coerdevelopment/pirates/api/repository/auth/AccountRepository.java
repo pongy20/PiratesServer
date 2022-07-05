@@ -38,6 +38,8 @@ public class AccountRepository extends Repository {
                     "CONSTRAINT pk_accountId PRIMARY KEY(accountid)," +
                     "CONSTRAINT uk_mail UNIQUE(mail))");
             ps.execute();
+            PreparedStatement ps2 = sql.getConnection().prepareStatement("ALTER TABLE " + tableName + " AUTO_INCREMENT = 1000000");
+            ps2.execute();
         } catch (SQLException e) {
             e.printStackTrace();
         }

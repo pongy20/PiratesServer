@@ -1,5 +1,6 @@
 package de.coerdevelopment.standalone.serverui;
 
+import de.coerdevelopment.pirates.authserver.AuthServer;
 import de.coerdevelopment.standalone.logging.ServerLogger;
 import de.coerdevelopment.standalone.net.server.GameServer;
 import de.coerdevelopment.standalone.net.server.LoginServer;
@@ -21,11 +22,8 @@ public class UITester {
         });
 
         try {
-            Map<String, Object[]> servers = new HashMap<>();
-            servers.put("Auth-Server", new Object[]{ServerType.LOGINSERVER, LoginServer.DEFAULT_PORT});
-            servers.put("GameServer", new Object[]{ServerType.GAMESERVER, GameServer.DEFAULT_PORT});
-            ServerStartUI startUI = ServerStartUI.createInstance(servers);
-            JFrame startFrame = startUI.createUI(servers);
+            ServerStartUI startUI = ServerStartUI.createInstance(new AuthServer());
+            JFrame startFrame = startUI.createUI();
 
             startFrame.setVisible(true);
         } catch (Exception e) {

@@ -23,7 +23,8 @@ public class GameWorldRepository extends Repository {
         return instance;
     }
 
-    private GameWorldRepository() {
+    @Deprecated
+    public GameWorldRepository() {
         super("world");
     }
 
@@ -37,9 +38,9 @@ public class GameWorldRepository extends Repository {
                     "ip_address VARCHAR(50) NOT NULL," +
                     "enabled BOOLEAN NOT NULL," +
                     "CONSTRAINT pk_world PRIMARY KEY(worldId)," +
-                    "CONSTRAINT  uk_ip_port UNIQUE(defaultPort,ip_address)," +
-                    "CONSTRAINT  uk_name UNIQUE(name))");
-            ps.executeUpdate();
+                    "CONSTRAINT uk_ip_port UNIQUE(defaultPort,ip_address)," +
+                    "CONSTRAINT uk_name UNIQUE(name))");
+            ps.execute();
         } catch (SQLException e) {
             e.printStackTrace();
         }
@@ -96,7 +97,7 @@ public class GameWorldRepository extends Repository {
                 allWorlds.add(getGameWorldByResultSetEntry(rs));
             }
         } catch (SQLException e) {
-            e.printStackTrace();
+            return new ArrayList<>();
         }
         return allWorlds;
     }

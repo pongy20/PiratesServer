@@ -100,7 +100,6 @@ public class OverviewUI {
             }
         });
 
-        server.startServer();
         initConsoleMessageSelectedTypes();
         updateUI();
     }
@@ -123,7 +122,7 @@ public class OverviewUI {
 
         // get all messages matching the selected criteria
         // messages should also be sorted at this time
-        SortedSet<ConsoleMessage> messagesByType = server.getFilteredConsoleMessages(selectedTypes);
+        SortedSet<ConsoleMessage> messagesByType = ConsoleMessage.getInstance().getFilteredConsoleMessages(selectedTypes);
 
         for (ConsoleMessage msg : messagesByType) {
             consoleText.setText(consoleText.getText() + msg.toConsoleMessage() + "\n");

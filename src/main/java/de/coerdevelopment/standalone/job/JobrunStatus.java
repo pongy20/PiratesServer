@@ -8,7 +8,7 @@ public enum JobrunStatus {
     RUNNING("running"),
     FINISHED_ERROR("finished (error)"),
     FINISHED_SUCCESSFUL("finished"),
-    ABORT_USER ("abort (user)"),
+    ABORT_USER("abort (user)"),
     ABORT_SYSTEM("abort (system)");
 
     String name;

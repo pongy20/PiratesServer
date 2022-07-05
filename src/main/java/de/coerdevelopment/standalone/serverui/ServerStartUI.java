@@ -1,14 +1,22 @@
 package de.coerdevelopment.standalone.serverui;
 
+import de.coerdevelopment.pirates.PiratesServerStart;
+import de.coerdevelopment.pirates.api.GameWorld;
+import de.coerdevelopment.pirates.api.repository.auth.GameWorldRepository;
 import de.coerdevelopment.pirates.gameserver.PiratesGameServer;
 import de.coerdevelopment.pirates.authserver.AuthServer;
+import de.coerdevelopment.standalone.net.server.LoginServer;
 import de.coerdevelopment.standalone.net.server.Server;
 import de.coerdevelopment.standalone.net.server.ServerType;
+import de.coerdevelopment.standalone.repository.SQL;
 
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 
 public class ServerStartUI {
@@ -20,12 +28,12 @@ public class ServerStartUI {
         return instance;
     }
 
-    public static ServerStartUI createInstance(Map<String, Object[]> servers) {
-        instance = new ServerStartUI(servers);
+    public static ServerStartUI createInstance(LoginServer loginServer) {
+        instance = new ServerStartUI(loginServer);
         return instance;
     }
 
-    public JFrame createUI(Map<String, Object[]> servers) {
+    public JFrame createUI() {
         assert instance != null;
         JFrame frame = new JFrame("WizzServer - Start");
         frame.setContentPane(instance.contentPanel);
@@ -53,10 +61,23 @@ public class ServerStartUI {
     private JButton createWorldButton;
     private JButton changePortButton;
 
-    private Map<String, Object[]> servers;
+    private LoginServer loginServer;
 
-    private ServerStartUI(Map<String, Object[]> servers) {
-        this.servers = servers;
+    private List<PiratesGameServer> gameServers;
+
+    private ServerStartUI(LoginServer server) {
+        this.loginServer = server;
+        this.gameServers = new ArrayList<>();
+
+        if (!SQL.getSQL().isConnected()) {
+            JOptionPane.showMessageDialog(frameInstance, "No SQL-Connection - please restart!", "No SQL-Connection", JOptionPane.ERROR_MESSAGE);
+            return;
+        }
+        List<GameWorld> worlds = new GameWorldRepository().getAllWorlds();
+        for (GameWorld world : worlds) {
+            gameServers.add(new PiratesGameServer(world.port, world));
+        }
+
         changePortButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -93,8 +114,9 @@ public class ServerStartUI {
 
     private void updateList() {
         DefaultComboBoxModel model = new DefaultComboBoxModel();
-        for (String servername : servers.keySet()) {
-            model.addElement(servername);
+        model.addElement("Auth-Server");
+        for (PiratesGameServer server : gameServers) {
+            model.addElement(server.gameWorld.worldname);
         }
         serverTypeCombo.setModel(model);
     }
@@ -105,9 +127,15 @@ public class ServerStartUI {
             return;
         }
         int port = 0;
-        for (String servername : servers.keySet()) {
-            if (selectedItem.equals(servername)) {
-                port = (int) servers.get(servername)[1];
+        if (selectedItem.equals("Auth-Server")) {
+            port = loginServer.tcpServer.port;
+        } else {
+            for (PiratesGameServer server : gameServers) {
+                if (server instanceof PiratesGameServer) {
+                    if (selectedItem.equals(server.gameWorld.worldname)) {
+                        port = server.tcpServer.port;
+                    }
+                }
             }
         }
         portField.setText(port + "");
@@ -140,21 +168,25 @@ public class ServerStartUI {
         if (!validateInput()) {
             return;
         }
-        Server server = null;
+        Server startedServer = null;
 
         String selectedItem = serverTypeCombo.getSelectedItem().toString();
-        Object[] info = servers.get(selectedItem);
-        if (info == null) {
-            return;
-        }
 
-        if (((ServerType) info[0]).equals(ServerType.LOGINSERVER)) {
-            server = new AuthServer((int) info[1]);
+        if (selectedItem.equals("Auth-Server")) {
+            startedServer = loginServer;
+            loginServer.startServer();
         } else {
-            server = new PiratesGameServer((int) info[1]);
+            for (PiratesGameServer server : gameServers) {
+                if (selectedItem.equals(server.gameWorld.worldname)) {
+                    startedServer = server;
+                    server.startServer();
+                }
+            }
         }
 
-        OverviewUI ui = OverviewUI.createInstance(server);
+        Server.instance = startedServer;
+
+        OverviewUI ui = OverviewUI.createInstance(startedServer);
         JFrame frame = ui.createUI();
         frame.setVisible(true);
 

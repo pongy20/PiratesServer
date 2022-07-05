@@ -14,7 +14,7 @@ public class TcpServer extends Thread {
      * Eg. 'Loginserver','German#1GameServer'
      */
     public final String servername;
-    protected final int port;
+    public final int port;
 
     protected ServerSocket serverSocket;
     protected List<TcpClientThread> clients;

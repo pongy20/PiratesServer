@@ -18,7 +18,16 @@ public class AuthServer extends LoginServer {
 
     public AuthServer(int port) {
         super(port);
+    }
+
+    @Override
+    public void startServer() {
+        super.startServer();
         initSQL();
+
+        while(!SQL.getSQL().isConnected()) {
+
+        }
 
         accountRepository = AccountRepository.getInstance();
         worldRepository = GameWorldRepository.getInstance();

@@ -40,7 +40,7 @@ public class LoginPlayerMethod extends TcpMethod {
         boolean correct = AuthKeyGenerator.getInstance().isAuthKeyCorrect(accountId, millis, authKey);
         clientThread.accountId = accountId;
         clientThread.isAuthorized = correct;
-        clientThread.send(new Datapackage("LOGIN_PLAYER_FEEDBACK", correct));
+        clientThread.send(new Datapackage(methodID, correct));
         if (correct) {
             //TODO: get / create island
             SendIslandInfoMethod method = new SendIslandInfoMethod();

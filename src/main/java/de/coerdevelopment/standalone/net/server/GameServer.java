@@ -11,7 +11,6 @@ public class GameServer extends Server {
     public GameServer(int port) {
         super(port, "Gameserver");
         maxOnlinePlayers = 1000;
-
     }
 
     public GameServer() {

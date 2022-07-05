@@ -46,7 +46,7 @@ public final class DebugMessage {
 
     public static synchronized void sendMessage(String msg, ConsoleMessage.ConsoleMessageType type) {
         if (console == null) {
-            console = Server.instance;
+            console = ConsoleMessage.getInstance();
         }
         if (server == null) {
             server = Server.instance;
