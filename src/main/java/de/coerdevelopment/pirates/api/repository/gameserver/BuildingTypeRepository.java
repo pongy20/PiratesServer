@@ -32,6 +32,7 @@ public class BuildingTypeRepository extends Repository {
                     " (buildingType VARCHAR(32)," +
                     "CONSTRAINT pk_bdt PRIMARY KEY(buildingType))");
             ps.execute();
+            insertDefaults();
         } catch (SQLException e) {
             e.printStackTrace();
         }
@@ -43,6 +44,7 @@ public class BuildingTypeRepository extends Repository {
                 PreparedStatement ps = sql.getConnection().prepareStatement("INSERT INTO " + tableName +
                         " (buildingType) VALUES (?)");
                 ps.setString(1, type.name());
+                ps.execute();
             } catch (SQLException e) {
                 continue;   // Entry already exists!
             }

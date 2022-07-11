@@ -50,6 +50,27 @@ public class Mine extends ProductionBuilding {
             case 12 -> rate = 1200;
             default -> throw new IllegalStateException("Unexpected value: " + level);
         }
+        return rate * 10;
+    }
+
+    @Override
+    public int getMaxResourceStorage(int level) {
+        int rate;
+        switch (level) {
+            case 1 -> rate = 100;
+            case 2 -> rate = 150;
+            case 3 -> rate = 200;
+            case 4 -> rate = 300;
+            case 5 -> rate = 400;
+            case 6 -> rate = 500;
+            case 7 -> rate = 750;
+            case 8 -> rate = 1000;
+            case 9 -> rate = 1250;
+            case 10 -> rate = 1500;
+            case 11 -> rate = 2000;
+            case 12 -> rate = 2500;
+            default -> throw new IllegalStateException("Unexpected value: " + level);
+        }
         return rate;
     }
 

@@ -1,6 +1,8 @@
 package de.coerdevelopment.pirates.api;
 
 import de.coerdevelopment.pirates.api.building.Building;
+import de.coerdevelopment.pirates.api.building.BuildingType;
+import de.coerdevelopment.pirates.api.building.ProductionBuilding;
 import de.coerdevelopment.pirates.api.building.instances.Farm;
 import de.coerdevelopment.pirates.api.building.instances.Lumberjack;
 import de.coerdevelopment.pirates.api.building.instances.Mine;
@@ -40,4 +42,47 @@ public class Island {
     public static List<Building> getBasicBuildings() {
         return Arrays.asList(new Lumberjack(1), new Mine(1), new Farm(1), new Storage(1));
     }
+
+    public int getCurrentlyStoredResourceByType(ResourceType type) {
+        return switch (type) {
+            case WOOD -> wood;
+            case ORE -> ore;
+            case FABRIC -> fabric;
+            case DUCAT -> ducat;
+            default -> 0;
+        };
+    }
+
+    public void setCurrentlyStoredResourceByType(ResourceType type, int amount) {
+        switch (type) {
+            case WOOD ->  wood = amount;
+            case ORE -> ore = amount;
+            case FABRIC -> fabric = amount;
+            case DUCAT -> ducat = amount;
+        }
+    }
+
+    public void addCurrentlyStoredResourceByType(ResourceType type, int amount) {
+        switch (type) {
+            case WOOD ->  wood += amount;
+            case ORE -> ore += amount;
+            case FABRIC -> fabric += amount;
+            case DUCAT -> ducat += amount;
+        }
+    }
+
+    public Building getBuildingByType(BuildingType type) {
+        return switch (type) {
+            case LUMBERJACK -> lumberjack;
+            case MINE -> mine;
+            case FARM -> farm;
+            case STORAGE -> storage;
+            default -> null;
+        };
+    }
+
+    public List<ProductionBuilding> getProductionBuildings() {
+        return Arrays.asList(lumberjack, mine, farm);
+    }
+
 }

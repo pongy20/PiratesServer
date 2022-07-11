@@ -1,6 +1,7 @@
 package de.coerdevelopment.pirates.gameserver.methods;
 
 import com.google.gson.Gson;
+import de.coerdevelopment.pirates.api.service.gameserver.PlayerService;
 import de.coerdevelopment.pirates.authserver.utils.AuthKeyGenerator;
 import de.coerdevelopment.pirates.utils.PiratesMethod;
 import de.coerdevelopment.standalone.net.Datapackage;
@@ -42,9 +43,15 @@ public class LoginPlayerMethod extends TcpMethod {
         clientThread.isAuthorized = correct;
         clientThread.send(new Datapackage(methodID, correct));
         if (correct) {
-            //TODO: get / create island
+            if (!PlayerService.getInstance().hasPlayerPlayedBefore(accountId)) {
+                PlayerService.getInstance().initPlayer(accountId);
+            }
+            // Send information about player island
             SendIslandInfoMethod method = new SendIslandInfoMethod();
             method.onMethod(null, clientThread);
+            // Send information about building upgrades
+            SendUpgradeInfoMethod sendUpgradeInfoMethod = new SendUpgradeInfoMethod();
+            sendUpgradeInfoMethod.onMethod(null, clientThread);
         }
     }
 }

@@ -1,6 +1,11 @@
 package de.coerdevelopment.pirates.api.repository.gameserver;
 
+import de.coerdevelopment.pirates.api.building.Building;
 import de.coerdevelopment.pirates.api.building.BuildingType;
+import de.coerdevelopment.pirates.api.building.instances.Farm;
+import de.coerdevelopment.pirates.api.building.instances.Lumberjack;
+import de.coerdevelopment.pirates.api.building.instances.Mine;
+import de.coerdevelopment.pirates.api.building.instances.Storage;
 import de.coerdevelopment.standalone.repository.Repository;
 
 import java.sql.PreparedStatement;
@@ -57,6 +62,12 @@ public class BuildingRepository extends Repository {
         }
     }
 
+    public void initBuildings(int islandId) {
+        for (BuildingType type : BuildingType.values()) {
+            insertBuilding(islandId, type);
+        }
+    }
+
     public void upgradeBuildingLevel(int islandId, BuildingType type) {
         try {
             PreparedStatement ps = sql.getConnection().prepareStatement("UPDATE " + tableName + " SET level = level + 1 " +
@@ -82,6 +93,19 @@ public class BuildingRepository extends Repository {
             e.printStackTrace();
         }
         return 0;
+    }
+
+    public Lumberjack getLumberjack(int islandId) {
+        return new Lumberjack(getLevel(islandId, BuildingType.LUMBERJACK));
+    }
+    public Mine getMine(int islandId) {
+        return new Mine(getLevel(islandId, BuildingType.MINE));
+    }
+    public Farm getFarm(int islandId) {
+        return new Farm(getLevel(islandId, BuildingType.FARM));
+    }
+    public Storage getStorage(int islandId) {
+        return new Storage(getLevel(islandId, BuildingType.STORAGE));
     }
 
 }

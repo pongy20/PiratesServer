@@ -2,6 +2,10 @@ package de.coerdevelopment.pirates.api.repository.gameserver;
 
 import de.coerdevelopment.pirates.api.Island;
 import de.coerdevelopment.pirates.api.Player;
+import de.coerdevelopment.pirates.api.building.instances.Farm;
+import de.coerdevelopment.pirates.api.building.instances.Lumberjack;
+import de.coerdevelopment.pirates.api.building.instances.Mine;
+import de.coerdevelopment.pirates.api.building.instances.Storage;
 import de.coerdevelopment.standalone.repository.Repository;
 
 import java.sql.PreparedStatement;
@@ -56,6 +60,7 @@ public class IslandRepository extends Repository {
     }
 
     public Island createIsland(int playerId, String islandName) {
+        // Create Island as itself
         try {
             PreparedStatement ps = sql.getConnection().prepareStatement("INSERT INTO " + tableName +
                     " (owner,name,x,y,ducat) VALUES (?,?,?,?,?)");
@@ -68,7 +73,11 @@ public class IslandRepository extends Repository {
         } catch (SQLException e) {
             e.printStackTrace();
         }
-        return getIslandByName(islandName);
+
+        int islandId = getIslandIdByName(islandName);
+        // Create Buildings
+        BuildingRepository.getInstance().initBuildings(islandId);
+        return getIslandById(islandId);
     }
 
     public void updateOwner(int islandId, int newOwner) {
@@ -118,7 +127,7 @@ public class IslandRepository extends Repository {
 
     public Island getIslandByName(String islandName) {
         try {
-            PreparedStatement ps = sql.getConnection().prepareStatement("SELECT * FROM " + tableName + " WHERE islandName = ?");
+            PreparedStatement ps = sql.getConnection().prepareStatement("SELECT * FROM " + tableName + " WHERE name = ?");
             ps.setString(1, islandName);
             ResultSet rs = ps.executeQuery();
             if (rs.next()) {
@@ -128,6 +137,21 @@ public class IslandRepository extends Repository {
             e.printStackTrace();
         }
         return null;
+    }
+
+    private int getIslandIdByName(String islandName) {
+        try {
+            PreparedStatement ps = sql.getConnection().prepareStatement("SELECT islandId FROM " + tableName +
+                    " WHERE name = ?");
+            ps.setString(1, islandName);
+            ResultSet rs = ps.executeQuery();
+            if (rs.next()) {
+                return rs.getInt("islandId");
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return 0;
     }
 
     public Island getIslandById(int islandId) {
@@ -159,16 +183,34 @@ public class IslandRepository extends Repository {
         return islands;
     }
 
+    public List<Island> getAllIslands() {
+        List<Island> islands = new ArrayList<>();
+        try {
+            PreparedStatement ps = sql.getConnection().prepareStatement("SELECT * FROM " + tableName);
+            ResultSet rs = ps.executeQuery();
+            while (rs.next()) {
+                islands.add(getIslandByResultSetEntry(rs));
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return islands;
+    }
+
     private Island getIslandByResultSetEntry(ResultSet rs) throws SQLException {
         int islandId = rs.getInt("islandId");
         int playerId = rs.getInt("owner");
-        String islandName = rs.getString("islandName");
+        String islandName = rs.getString("name");
         int x = rs.getInt("x");
         int y = rs.getInt("y");
         int ducat = rs.getInt("ducat");
-        //TODO: load buildings
         Player player = PlayerRepository.getInstance().getPlayerByPlayerId(playerId);
-        Island island = new Island(islandId, player, islandName, ducat, null, null, null, null);
+        BuildingRepository br = BuildingRepository.getInstance();
+        Lumberjack lumberjack = br.getLumberjack(islandId);
+        Mine mine = br.getMine(islandId);
+        Farm farm = br.getFarm(islandId);
+        Storage storage = br.getStorage(islandId);
+        Island island = new Island(islandId, player, islandName, ducat, lumberjack, mine, farm, storage);
         return island;
     }
 

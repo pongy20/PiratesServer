@@ -1,11 +1,16 @@
 package de.coerdevelopment.pirates.gameserver;
 
 import de.coerdevelopment.pirates.api.GameWorld;
+import de.coerdevelopment.pirates.api.Island;
 import de.coerdevelopment.pirates.api.repository.gameserver.*;
+import de.coerdevelopment.pirates.api.service.gameserver.IslandService;
+import de.coerdevelopment.pirates.gameserver.methods.CollectResourceMethod;
 import de.coerdevelopment.pirates.gameserver.methods.LoginPlayerMethod;
 import de.coerdevelopment.standalone.net.server.GameServer;
 import de.coerdevelopment.standalone.repository.SQL;
 import de.coerdevelopment.standalone.util.DebugMessage;
+
+import java.util.List;
 
 public class PiratesGameServer extends GameServer {
 
@@ -19,6 +24,8 @@ public class PiratesGameServer extends GameServer {
     public IslandRepository islandRepository;
     public BuildingRepository buildingRepository;
     public BuildingTypeRepository buildingTypeRepository;
+
+
 
     public PiratesGameServer(int port, GameWorld world) {
         super(port);
@@ -45,10 +52,13 @@ public class PiratesGameServer extends GameServer {
         createTables();
 
         registerMethods();
+
+        IslandService.getInstance().islands = islandRepository.getAllIslands();
     }
 
     public void registerMethods() {
         tcpServer.registerMethod(new LoginPlayerMethod());
+        tcpServer.registerMethod(new CollectResourceMethod());
     }
 
     private void initSQL() {
@@ -66,4 +76,5 @@ public class PiratesGameServer extends GameServer {
         islandRepository.createTable();
         buildingRepository.createTable();
     }
+
 }

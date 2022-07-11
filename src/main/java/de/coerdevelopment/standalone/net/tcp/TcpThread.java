@@ -46,6 +46,7 @@ public abstract class TcpThread extends Thread {
                 }
 
                 String readString = new String(data, 0, length);
+                DebugMessage.sendDebugMessage("Incoming Message: " + readString);
                 if (readString == null) {
                     DebugMessage.sendErrorMessage("Datapackage with NULL data arrived.");
                     continue;
@@ -61,6 +62,7 @@ public abstract class TcpThread extends Thread {
                     Datapackage datapackage = (Datapackage) convertedObj;
                     for (TcpMethod method : registeredMethods) {
                         if (method.getMethodID().equals(datapackage.getMethodID())) {
+                            DebugMessage.sendDebugMessage("TEst");
                             method.onMethod(datapackage, TcpThread.this);
                             break;
                         }
@@ -80,7 +82,7 @@ public abstract class TcpThread extends Thread {
     public void send(Datapackage datapackage) {
         try {
             String json = JsonConverter.getInstance().convertDatapackageToJson(datapackage);
-            DebugMessage.sendDebugMessage(json);
+            DebugMessage.sendDebugMessage("Outgoing message: " + json);
             byte[] dataToSend = json.getBytes();
             DebugMessage.sendDebugMessage(dataToSend.length);
             out.write(dataToSend);
